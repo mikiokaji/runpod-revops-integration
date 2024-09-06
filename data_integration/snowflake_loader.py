@@ -16,10 +16,7 @@ def connect_to_snowflake():
         account=SNOWFLAKE_ACCOUNT,
         warehouse=SNOWFLAKE_WAREHOUSE,
         database=SNOWFLAKE_DATABASE,
-        schema=SNOWFLAKE_SCHEMA,
-        insecure_mode=True,
-        network_timeout=30,
-        ocsp_fail_open=False
+        schema=SNOWFLAKE_SCHEMA
     )
     return conn
 
@@ -50,9 +47,9 @@ def load_contacts_to_staging(contacts):
         for contact in contacts['results']:
             cursor.execute(insert_query, (
                 contact['id'],
-                contact['properties']['email'],
-                contact['properties']['firstname'],
-                contact['properties']['lastname']
+                contact['properties'].get('email', 'Unknown'),
+                contact['properties'].get('firstname', 'Unknown'),
+                contact['properties'].get('lastname', 'Unknown')
             ))
         conn.commit()
         print("Contacts loaded into staging table.")
@@ -86,8 +83,8 @@ def load_companies_to_staging(companies):
         for company in companies['results']:
             cursor.execute(insert_query, (
                 company['id'],
-                company['properties']['name'],
-                company['properties']['industry']
+                company['properties'].get('name', 'Unknown'),
+                company['properties'].get('industry', 'Unknown')
             ))
         conn.commit()
         print("Companies loaded into staging table.")
@@ -121,8 +118,8 @@ def load_deals_to_staging(deals):
         for deal in deals['results']:
             cursor.execute(insert_query, (
                 deal['id'],
-                deal['properties']['amount'],
-                deal['properties']['closedate']
+                deal['properties'].get('amount', '0'),
+                deal['properties'].get('closedate', 'Unknown')
             ))
         conn.commit()
         print("Deals loaded into staging table.")
