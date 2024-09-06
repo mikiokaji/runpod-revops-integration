@@ -6,6 +6,9 @@ import logging
 from snowflake_loader import load_contacts_to_staging, load_companies_to_staging, load_deals_to_staging
 from hubspot_api import get_contacts, get_companies, get_deals
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+
 def main():
     try:
         logging.info("Starting the HubSpot data extraction process.")
