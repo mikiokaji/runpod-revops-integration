@@ -35,7 +35,10 @@ def get_companies():
 # Fetch deals from HubSpot
 def get_deals():
     endpoint = "crm/v3/objects/deals"
-    params = {"limit": 100}
+    params = {
+        "limit": 100,  # Limit the number of results per request
+        "associations": "companies"  # Include company associations in the response
+    }
     return make_request(endpoint, params)
 
 

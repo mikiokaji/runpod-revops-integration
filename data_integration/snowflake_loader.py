@@ -103,7 +103,8 @@ def load_deals_to_staging(deals):
             CREATE OR REPLACE TABLE staging_deals (
                 id STRING,
                 amount STRING,
-                close_date STRING
+                close_date STRING,
+                company_id STRING  -- Add company_id to link deals with companies
             );
         """)
 
@@ -112,14 +113,16 @@ def load_deals_to_staging(deals):
 
         # Insert deals data into the staging table
         insert_query = """
-        INSERT INTO staging_deals (id, amount, close_date)
-        VALUES (%s, %s, %s)
+        INSERT INTO staging_deals (id, amount, close_date, company_id)
+        VALUES (%s, %s, %s, %s)
         """
         for deal in deals['results']:
+            company_id = deal['associations']['companies']['results'][0]['id'] if 'associations' in deal and 'companies' in deal['associations'] else None
             cursor.execute(insert_query, (
                 deal['id'],
                 deal['properties'].get('amount', '0'),
-                deal['properties'].get('closedate', 'Unknown')
+                deal['properties'].get('closedate', 'Unknown'),
+                company_id  # Insert the associated company_id
             ))
         conn.commit()
         print("Deals loaded into staging table.")
