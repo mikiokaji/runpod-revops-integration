@@ -160,3 +160,12 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+
+# Configuration files containing sensitive information
+data_integration/config.py
+
+# Environment variables
+.env
+
+# Custom virtual environment folder
+venv_runpod/
