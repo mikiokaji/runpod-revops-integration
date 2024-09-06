@@ -12,6 +12,7 @@ def make_request(endpoint, params={}):
     response = requests.get(url, headers=headers, params=params)
 
     if response.status_code == 200:
+        print(response.json())  # Log the full API response to inspect the fields
         return response.json()
     else:
         print(f"Error: {response.status_code} - {response.text}")
