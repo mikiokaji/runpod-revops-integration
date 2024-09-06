@@ -1,17 +1,17 @@
 -- Create a view that links HubSpot contacts with Snowflake users and calculates clientLifeTimeSpend
-CREATE OR REPLACE VIEW contacts_to_users AS
+CREATE OR REPLACE VIEW INTERVIEW_DATA_4.PUBLIC.contacts_to_users AS
 SELECT
     c.id AS contact_id,               -- HubSpot contact ID
     c.first_name,                     -- HubSpot contact first name
     c.last_name,                      -- HubSpot contact last name
-    u.user_id,                        -- Snowflake user ID from the USER table
+    u.id AS user_id,                  -- Snowflake user ID from the USER table
     u.email,                          -- Email from the USER table
     SUM(t.amount) AS clientLifeTimeSpend -- Sum of transactions to calculate total spend by this user
 FROM
-    staging_contacts c                -- Staging table containing HubSpot contacts
+    INTERVIEW_DATA_4.PUBLIC.staging_contacts c  -- Fully qualified HubSpot contacts table
 JOIN
-    USER u ON c.email = u.email       -- Join on email between HubSpot contacts and Snowflake users
+    INTERVIEW_DATA_4.PUBLIC.USER u ON c.email = u.email  -- Fully qualified USER table
 LEFT JOIN
-    TRANSACTION t ON u.user_id = t.user_id -- Join with transactions to calculate total spending
+    INTERVIEW_DATA_4.PUBLIC.TRANSACTION t ON u.id = t.user_id  -- Fully qualified TRANSACTION table
 GROUP BY
-    c.id, c.first_name, c.last_name, u.user_id, u.email;  -- Group by contact and user details for aggregation
+    c.id, c.first_name, c.last_name, u.id, u.email;  -- Group by contact and user details for aggregation
