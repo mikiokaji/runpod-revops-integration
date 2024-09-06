@@ -1,0 +1,7 @@
+load_from:
+  - python_file:
+      relative_path: repository.py
+  - python_file:
+      relative_path: schedule.py
+  - python_file:
+      relative_path: runpod_revops_pipeline.py

@@ -129,3 +129,16 @@ def load_deals_to_staging(deals):
     finally:
         cursor.close()
         conn.close()
+
+def execute_sql_script(file_path):
+    conn = connect_to_snowflake()
+    cursor = conn.cursor()
+    try:
+        with open(file_path, 'r') as sql_file:
+            sql_script = sql_file.read()
+            cursor.execute(sql_script)
+            conn.commit()
+            print(f"Successfully executed {file_path}")
+    finally:
+        cursor.close()
+        conn.close()

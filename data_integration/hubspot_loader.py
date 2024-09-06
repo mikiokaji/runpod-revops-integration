@@ -2,6 +2,7 @@
 Handles the extraction of data from HubSpot's API. This will include
 fetching the raw data, formatting it, and preparing it for insertion.
 '''
+
 import logging
 from snowflake_loader import load_contacts_to_staging, load_companies_to_staging, load_deals_to_staging
 from hubspot_api import get_contacts, get_companies, get_deals
@@ -9,40 +10,32 @@ from hubspot_api import get_contacts, get_companies, get_deals
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 
-def main():
+def fetch_contacts_from_hubspot():
     try:
-        logging.info("Starting the HubSpot data extraction process.")
-
-        # Fetch data from HubSpot API
-        logging.info("Fetching contacts...")
+        logging.info("Fetching contacts from HubSpot...")
         contacts = get_contacts()
         logging.info("Contacts fetched successfully.")
+        return contacts
+    except Exception as e:
+        logging.error(f"Error fetching contacts: {e}", exc_info=True)
+        raise
 
-        logging.info("Fetching companies...")
+def fetch_companies_from_hubspot():
+    try:
+        logging.info("Fetching companies from HubSpot...")
         companies = get_companies()
         logging.info("Companies fetched successfully.")
+        return companies
+    except Exception as e:
+        logging.error(f"Error fetching companies: {e}", exc_info=True)
+        raise
 
-        logging.info("Fetching deals...")
+def fetch_deals_from_hubspot():
+    try:
+        logging.info("Fetching deals from HubSpot...")
         deals = get_deals()
         logging.info("Deals fetched successfully.")
-
-        # Load data into Snowflake
-        logging.info("Loading contacts into Snowflake...")
-        load_contacts_to_staging(contacts)
-        logging.info("Contacts loaded into Snowflake successfully.")
-
-        logging.info("Loading companies into Snowflake...")
-        load_companies_to_staging(companies)
-        logging.info("Companies loaded into Snowflake successfully.")
-
-        logging.info("Loading deals into Snowflake...")
-        load_deals_to_staging(deals)
-        logging.info("Deals loaded into Snowflake successfully.")
-
-        logging.info("HubSpot data extraction and load process completed successfully.")
-
+        return deals
     except Exception as e:
-        logging.error(f"An error occurred: {e}", exc_info=True)
-
-if __name__ == "__main__":
-    main()
+        logging.error(f"Error fetching deals: {e}", exc_info=True)
+        raise
