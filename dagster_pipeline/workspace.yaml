@@ -1,7 +1,10 @@
 load_from:
   - python_file:
       relative_path: repository.py
+      working_directory: /Users/mikiokaji/PycharmProjects/runpod-revops-integration/dagster_pipeline
   - python_file:
       relative_path: schedule.py
+      working_directory: /Users/mikiokaji/PycharmProjects/runpod-revops-integration/dagster_pipeline
   - python_file:
       relative_path: runpod_revops_pipeline.py
+      working_directory: /Users/mikiokaji/PycharmProjects/runpod-revops-integration/dagster_pipeline

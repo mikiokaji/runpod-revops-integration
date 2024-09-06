@@ -1,5 +1,5 @@
 import requests
-from config import HUBSPOT_API_KEY, HUBSPOT_API_URL
+from .config import HUBSPOT_API_KEY, HUBSPOT_API_URL
 
 
 # Helper function to make API requests

@@ -50,7 +50,8 @@ def execute_teams_sql():
 def execute_deals_sql():
     execute_sql_script("data_integration/sql/company_deals.sql")
 
-@job
+# Rename the job to a unique name to avoid conflicts
+@job(name="revops_pipeline_job")
 def runpod_revops_pipeline():
     contacts = extract_contacts()
     companies = extract_companies()

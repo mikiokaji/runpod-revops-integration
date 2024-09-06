@@ -1,8 +1,14 @@
 from dotenv import load_dotenv
 import os
+import sys  # Import sys to modify the system path
 
 # Load the environment variables from the .env file
 load_dotenv()
+
+# Add PYTHONPATH to sys.path to ensure Python can find all the necessary modules
+python_path = os.getenv('PYTHONPATH')
+if python_path:
+    sys.path.append(python_path)
 
 # HubSpot API configuration
 HUBSPOT_API_KEY = os.getenv("HUBSPOT_API_KEY")
