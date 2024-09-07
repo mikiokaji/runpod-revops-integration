@@ -88,6 +88,7 @@ SNOWFLAKE_ACCOUNT=your_snowflake_account
 SNOWFLAKE_WAREHOUSE=your_snowflake_warehouse
 SNOWFLAKE_DATABASE=your_snowflake_database
 SNOWFLAKE_SCHEMA=your_snowflake_schema
+PYTHONPATH=/path/to/your/local/runpod-revops-integration
 ```
 
 ### 5. Launching the Dagster Web UI
