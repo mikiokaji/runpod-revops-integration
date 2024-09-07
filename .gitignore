@@ -161,9 +161,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# Configuration files containing sensitive information
-data_integration/config.py
-
 # Environment variables
 .env
 
