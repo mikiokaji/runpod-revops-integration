@@ -91,6 +91,17 @@ SNOWFLAKE_SCHEMA=your_snowflake_schema
 PYTHONPATH=/path/to/your/local/runpod-revops-integration
 ```
 
+#### 4.1 `pyproject.toml` Configuration
+
+The project includes a pyproject.toml file in the dagster_pipeline folder with specific configuration settings for Dagster. Make sure to review and update this file if necessary, particularly the following section:
+
+```toml
+[tool.dagster]
+home = "/Users/your-username/dagster_home"
+```
+
+- The `home` variable defines the path where Dagster stores its metadata and logs. Ensure this path exists on your machine, and modify it to your local environment if needed.
+
 ### 5. Launching the Dagster Web UI
 
 This project uses Dagster for pipeline orchestration. To launch the Dagster web UI and services:
