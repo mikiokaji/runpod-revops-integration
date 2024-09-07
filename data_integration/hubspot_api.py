@@ -1,5 +1,10 @@
 import requests
+import logging
 from .config import HUBSPOT_API_KEY, HUBSPOT_API_URL
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Helper function to make API requests
 def make_request(endpoint, params={}):
@@ -8,13 +13,18 @@ def make_request(endpoint, params={}):
         "Authorization": f"Bearer {HUBSPOT_API_KEY}",
         "Content-Type": "application/json"
     }
-    response = requests.get(url, headers=headers, params=params)
 
-    if response.status_code == 200:
-        print(response.json())  # Log the full API response to inspect the fields
+    try:
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()  # Raise an HTTPError for bad responses (4xx, 5xx)
+        logger.info(f"Successfully made request to {url}")
+        logger.debug(f"Response: {response.json()}")
         return response.json()
-    else:
-        print(f"Error: {response.status_code} - {response.text}")
+    except requests.exceptions.HTTPError as http_err:
+        logger.error(f"HTTP error occurred: {http_err}")
+        return None
+    except Exception as err:
+        logger.error(f"Other error occurred: {err}")
         return None
 
 # Fetch contacts from HubSpot
@@ -40,12 +50,11 @@ def get_deals():
 
 # Main function to test fetching data
 if __name__ == "__main__":
-    # Test each function
     contacts = get_contacts()
-    print("Contacts:", contacts)
+    logger.info(f"Contacts: {contacts}")
 
     companies = get_companies()
-    print("Companies:", companies)
+    logger.info(f"Companies: {companies}")
 
     deals = get_deals()
-    print("Deals:", deals)
+    logger.info(f"Deals: {deals}")
