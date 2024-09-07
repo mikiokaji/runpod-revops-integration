@@ -1,3 +1,5 @@
+# RunPod RevOps Integration Project: HubSpot to Snowflake Pipeline
+
 ## Architecture Overview
 
 The following architecture illustrates the flow of data from the HubSpot API to the final Snowflake views.
