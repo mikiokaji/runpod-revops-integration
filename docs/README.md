@@ -159,7 +159,7 @@ HubSpot's CRM system provides the following key entities via API:
 
 - Contacts: `id`, `email`, `first_name`, `last_name`, `company_id`
 - Companies: `id`, `name`, `industry`
-- Deals: `id`, `amount`, `close_date`, `company_id` (linked to companies)
+- Deals: `id`, `amount`, `close_date`, `company_name`,  `company_id` (linked to companies)
 
 ### 2. Business Logic Database (Snowflake)
 
