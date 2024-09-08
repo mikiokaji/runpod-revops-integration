@@ -116,7 +116,8 @@ def load_deals_to_staging(deals):
                 id STRING,
                 amount STRING,
                 close_date STRING,
-                company_id STRING  -- Add company_id to link deals with companies
+                company_id STRING,
+                company_name STRING  -- Add company_name for clarity
             );
         """)
 
@@ -125,17 +126,34 @@ def load_deals_to_staging(deals):
 
         logger.info("Inserting deals into staging_deals.")
         insert_query = """
-        INSERT INTO staging_deals (id, amount, close_date, company_id)
-        VALUES (%s, %s, %s, %s)
+        INSERT INTO staging_deals (id, amount, close_date, company_id, company_name)
+        VALUES (%s, %s, %s, %s, %s)
         """
         for deal in deals['results']:
-            company_id = deal['associations']['companies']['results'][0]['id'] if 'associations' in deal and 'companies' in deal['associations'] else None
+            # Handle potential null values for amount and close_date
+            amount = deal['properties'].get('amount', '0')
+            close_date = deal['properties'].get('closedate', 'Unknown')
+
+            # Extract the first company id from associations, if available
+            company_id = None
+            if 'associations' in deal and 'companies' in deal['associations']:
+                company_results = deal['associations']['companies']['results']
+                if company_results:
+                    company_id = company_results[0]['id']
+
+            # Extract the company name from dealname, assuming it's formatted as "CompanyName - DealName"
+            dealname = deal['properties'].get('dealname', '')
+            company_name = dealname.split(" - ")[0] if " - " in dealname else None
+
+            # Insert the deal into Snowflake
             cursor.execute(insert_query, (
                 deal['id'],
-                deal['properties'].get('amount', '0'),
-                deal['properties'].get('closedate', 'Unknown'),
-                company_id
+                amount,
+                close_date,
+                company_id,
+                company_name
             ))
+
         conn.commit()
         logger.info("Deals loaded into staging table successfully.")
     except Exception as e:
