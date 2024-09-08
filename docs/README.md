@@ -117,8 +117,6 @@ This command will start the Dagster web server, accessible at `http://127.0.0.1:
 
 3. Open a browser and go to the provided web address to view the Dagster web UI.
 
-![Screenshot 2024-09-08 at 11.20.42 AM.png](..%2F..%2F..%2F..%2F..%2Fvar%2Ffolders%2F8y%2F_gptstjd4r1dgj_f_553_vmh0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_JUVHUt%2FScreenshot%202024-09-08%20at%2011.20.42%20AM.jpg)
-
 ### 6. Running the Data Pipeline
 
 Once the Dagster web server is running, follow these steps to run the pipeline:
@@ -135,10 +133,6 @@ The project has a pre-configured schedule, `every_minute_schedule`, that trigger
 
 #### 6.2 Viewing Pipeline Runs
 Once the schedule is running, the pipeline will execute every minute. You can monitor the results by navigating to the "Runs" section in the Dagster Web UI at `http://127.0.0.1:3000`. There, you will find logs and detailed execution results for each run.
-
-![Screenshot 2024-09-08 at 11.22.07 AM.png](..%2F..%2F..%2F..%2F..%2Fvar%2Ffolders%2F8y%2F_gptstjd4r1dgj_f_553_vmh0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_b9Yzft%2FScreenshot%202024-09-08%20at%2011.22.07%20AM.jpg)
-
-![Screenshot 2024-09-08 at 11.23.09 AM.png](..%2F..%2F..%2F..%2F..%2Fvar%2Ffolders%2F8y%2F_gptstjd4r1dgj_f_553_vmh0000gn%2FT%2FTemporaryItems%2FNSIRD_screencaptureui_BkCYJF%2FScreenshot%202024-09-08%20at%2011.23.09%20AM.jpg)
 
 #### 6.3 Manually Triggering the Pipeline
 If you want to trigger the pipeline manually, you can do so through the Dagster Web UI by navigating to the pipeline and clicking on “Launch Run.”
