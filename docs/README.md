@@ -24,7 +24,7 @@ The following architecture illustrates the flow of data from the HubSpot API to 
                              v
        -----------------------------------------------
        | Snowflake Business Logic Database            |
-       | (Users, Teams, Team Membership, Transactions)|
+       | (Users, Teams, Team Membership)              |
        -----------------------------------------------
                              |
                              v
@@ -32,6 +32,7 @@ The following architecture illustrates the flow of data from the HubSpot API to 
         | Snowflake Final Views                 |
         | - contacts_to_users                   |
         | - team_spending                       |
+        | - company_deals                       |
         ----------------------------------------
 ```
 
@@ -40,9 +41,11 @@ The following architecture illustrates the flow of data from the HubSpot API to 
 1. **HubSpot API**: The data source for fetching contacts, companies, and deals.
 2. **Dagster Pipelines**: Executes data ingestion and transformation logic, pulling data from HubSpot and processing it for Snowflake.
 3. **Snowflake Staging Tables**: Temporary tables where the raw data from HubSpot is stored for further processing.
-4. **Snowflake Business Logic Database**: Stores user, team, and membership data, used to enrich HubSpot data.
-5. **Snowflake Final Views**: The final output of the pipeline that aggregates the data into actionable insights, like `contacts_to_users` and `team_spending`.
-
+4. **Snowflake Business Logic Database**: Stores user, team, and membership data, used to enrich HubSpot data. The `transactions` table is **not used** for spending calculations in this pipeline. Instead, HubSpot deals data is used.
+5. **Snowflake Final Views**:
+- `contacts_to_users`: Links HubSpot contacts to Snowflake users and calculates each user's lifetime spend.
+- `team_spending`: Links HubSpot companies to Snowflake teams and calculates total team spending based on associated HubSpot deals.
+- `company_deals`: Shows HubSpot deals associated with each company.
 
 ## Setup and Running Instructions
 
@@ -163,8 +166,7 @@ HubSpot's CRM system provides the following key entities via API:
 
 ### 2. Business Logic Database (Snowflake)
 
-This database stores internal business data, specifically customer accounts, teams, transactions, and their memberships. These tables are used to link with HubSpot data, allowing us to calculate lifetime spend for users and total spend for teams.
-
+This database stores internal business data, specifically customer accounts, teams, and their memberships. These tables are used to link with HubSpot data, allowing us to calculate lifetime spend for users and team-based spend using HubSpot deals data.
 #### Business Logic Database Tables:
 - **Users**: RunPod users, linked to HubSpot contacts via email or `user_id`.
 - **Teams**: Groups of users within RunPod, linked to HubSpot companies via partial name matching.
@@ -195,18 +197,18 @@ The following views have been created to link the HubSpot data with the Snowflak
 
 #### 1. `company_deals` View
 
-This view joins deals with HubSpot companies to provide a list of deals associated with each company:
+This view joins deals with HubSpot companies to provide a list of deals associated with each company. The deal amount serves as the key financial metric.
 
 **Fields in this View:**
 - `deal_id`: The ID of the deal.
-- `amount`: The monetary value of the deal.
+- `amount`: The monetary value of the deal, now considered as the spend for the company.
 - `close_date`: The date the deal was closed.
 - `company_id`: The ID of the associated HubSpot company.
 - `company_name`: The name of the HubSpot company.
 
 #### 2. `coontacts_to_users` View
 
-This view links HubSpot contacts with Snowflake users and calculates each user’s total lifetime spend:
+his view links HubSpot contacts with Snowflake users and calculates each user's total lifetime spend, as derived from the Snowflake `users` table.
 
 **Fields in this View:**
 - `contact_id`: The ID of the HubSpot contact.
@@ -214,18 +216,18 @@ This view links HubSpot contacts with Snowflake users and calculates each user�
 - `last_name`: The contact’s last name.
 - `user_id`: The ID of the linked Snowflake user.
 - `email`: The email of the linked user.
-- `clientLifeTimeSpend`: The total lifetime spend of the user.
+- `clientLifeTimeSpend`: The total lifetime spend of the user (from Snowflake's `users` table).
 
 #### 3. `team_spending` View
 
-This view links HubSpot companies to Snowflake teams and calculates the total spending for each team:
+This view links HubSpot companies to Snowflake teams based on name similarity and calculates total team spend based on the associated HubSpot deals.
 
 **Fields in this View:**
 - `company_id`: The ID of the HubSpot company.
 - `company_name`: The name of the HubSpot company.
 - `team_id`: The ID of the Snowflake team.
 - `team_name`: The name of the team.
-- `totalTeamSpend`: The total amount spent by the team.
+- `totalTeamSpend`: The total amount spent by the team, derived from HubSpot deals associated with the company.
 
 ### 3. Data Pipeline
 1. Extract: Data is fetched from HubSpot (Contacts, Companies, Deals) and loaded into Snowflake staging tables.
@@ -265,3 +267,9 @@ Multiple pipeline schedules are defined to allow flexibility in execution freque
 - `every_hour_schedule`: Suitable for less time-sensitive tasks, particularly when handling large data loads or reducing API calls.
 
 It is assumed that these schedules can be adjusted based on production requirements and are flexible enough to handle varying data volumes without issues.
+
+### 9. Transactions Table:
+The `transactions` table in Snowflake is not used in this pipeline, as the focus is on HubSpot deals for determining spending metrics.
+
+### 10. Spending Data Source:
+Instead of calculating spend based on Snowflake transactions, HubSpot deals are used to measure company and team spending. Deals with missing or null amounts are excluded from these calculations.
