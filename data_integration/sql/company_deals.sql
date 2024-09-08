@@ -1,4 +1,3 @@
--- Create a view for Deals associated with HubSpot companies
 CREATE OR REPLACE VIEW INTERVIEW_DATA_4.PUBLIC.company_deals AS
 SELECT
     d.id AS deal_id,               -- Deal ID
