@@ -227,7 +227,7 @@ This view links HubSpot companies to Snowflake teams based on name similarity an
 - `company_name`: The name of the HubSpot company.
 - `team_id`: The ID of the Snowflake team.
 - `team_name`: The name of the team.
-- `totalTeamSpend`: The total amount spent by the team, derived from HubSpot deals associated with the company.
+- `total_team_spend`: The total amount spent by the team, derived from HubSpot deals associated with the company.
 
 ### 3. Data Pipeline
 1. Extract: Data is fetched from HubSpot (Contacts, Companies, Deals) and loaded into Snowflake staging tables.
