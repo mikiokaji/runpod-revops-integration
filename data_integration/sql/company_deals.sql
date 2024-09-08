@@ -4,12 +4,12 @@ SELECT
     d.id AS deal_id,               -- Deal ID
     d.amount,                      -- Deal amount
     d.close_date,                  -- Deal close date
-    c.id AS company_id,            -- HubSpot company ID
-    c.name AS company_name         -- HubSpot company name
+    c.id AS company_id,            -- HubSpot company ID (from companies table)
+    COALESCE(c.name, d.company_name) AS company_name -- Use staging_companies' name or the name from staging_deals
 FROM
-    INTERVIEW_DATA_4.PUBLIC.staging_deals d  -- Fully qualified staging_deals table
-JOIN
-    INTERVIEW_DATA_4.PUBLIC.staging_companies c ON c.id = d.company_id  -- Fully qualified staging_companies table, ensuring correct join
+    INTERVIEW_DATA_4.PUBLIC.staging_deals d
+LEFT JOIN
+    INTERVIEW_DATA_4.PUBLIC.staging_companies c
+    ON COALESCE(c.name, '') LIKE CONCAT('%', d.company_name, '%')  -- Match deals with companies
 WHERE
-    d.amount IS NOT NULL            -- Filter out deals without amounts
-    AND d.company_id IS NOT NULL;   -- Ensure deals have a valid company association
+    d.amount IS NOT NULL;           -- Filter out deals without amounts
